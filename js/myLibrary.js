@@ -9,7 +9,7 @@ const bookAuthor = document.querySelector('#book-author');
 const bookTitle = document.querySelector('#book-title');
 const bookPages = document.querySelector('#book-pages');
 const bookRead = document.querySelector('#book-read');
-const bookSubmit = document.querySelector('#book-submit');
+// const bookSubmit = document.querySelector('#book-submit');
 
 function Book(title, author, pages, read) {
   this.title = title;
@@ -22,65 +22,42 @@ Book.prototype.info = function info() {
   return `${this.title} by ${this.author}, ${this.pages} pages, ${this.read ? 'read' : 'not read yet'}`;
 };
 
-Book.prototype.isRead = function isRead() {
-  return this.read;
+function toggleRead(e) {
+  const index = e.target.parentElement.getAttribute('data-shelf-number');
+  myLibrary[index].read = !myLibrary[index].read;
+  fillBookshelf();
 }
 
-Book.prototype.read = function read() {
-  this.read = true;
-};
-
-Book.prototype.unread = function unread() {
-  this.read = false;
-};
-
-// function toggleRead(index) {
-//   return myLibrary[index].isRead() ? myLibrary[index].unread() : myLibrary[index].read();
-// }
-
-// function removeBookFromLibrary(index) {
-//   myLibrary.splice(index, 1);
-//   return myLibrary.length - 1;
-// }
-
-// function addBookToLibrary(book) {
-//   // const bookDiv = document.createElement('div');
-//   // const bookReadButton = document.createElement('button');
-//   // const bookRemoveButton = document.createElement('button');
-
-//   // bookDiv.classList.add('book');
-//   // bookDiv.textContent = book.info();
-
-//   // bookReadButton.classList.add('book-read-button');
-//   // bookReadButton.addEventListener('click', toggleRead);
-
-//   // bookRemoveButton.classList.add('book-remove-button');
-//   // bookRemoveButton.addEventListener('click', removeBookFromLibrary);
-
-//   // bookDiv.appendChild(bookReadButton);
-//   // bookDiv.appendChild(bookRemoveButton);
-//   // bookshelf.appendChild(bookDiv);
-// }
-
+function removeBookFromLibrary(e) {
+  const index = e.target.parentElement.getAttribute('data-shelf-number');
+  myLibrary.splice(index, 1);
+  fillBookshelf();
+  return myLibrary.length - 1;
+}
 
 function addBookCard() {
   const bookDiv = document.createElement('div');
-  // const bookReadButton = document.createElement('button');
-  // const bookRemoveButton = document.createElement('button');
+  const bookInfo = document.createElement('p');
+  const bookReadButton = document.createElement('button');
+  const bookRemoveButton = document.createElement('button');
 
   bookDiv.classList.add('book');
 
-  // bookReadButton.classList.add('book-read-button');
-  // bookReadButton.addEventListener('click', toggleRead);
+  bookInfo.classList.add('book-info');
 
-  // bookRemoveButton.classList.add('book-remove-button');
-  // bookRemoveButton.addEventListener('click', removeBookFromLibrary);
+  bookReadButton.classList.add('book-read-button');
+  bookReadButton.addEventListener('click', toggleRead);
 
-  // bookDiv.appendChild(bookReadButton);
-  // bookDiv.appendChild(bookRemoveButton);
+  bookRemoveButton.classList.add('book-remove-button');
+  bookRemoveButton.addEventListener('click', removeBookFromLibrary);
+
+  bookDiv.appendChild(bookInfo);
+  bookDiv.appendChild(bookReadButton);
+  bookDiv.appendChild(bookRemoveButton);
   bookshelf.appendChild(bookDiv);
 
   bookshelfReference.push(bookDiv);
+  return bookDiv;
 }
 
 function fillBookshelf() {
@@ -91,7 +68,7 @@ function fillBookshelf() {
   if (libLen > bsrLen) {
     // add book cards until equal
     for (let i = bsrLen; i < libLen; i += 1) {
-      addBookCard();
+      addBookCard().setAttribute('data-shelf-number', i);
     }
   }
 
@@ -101,7 +78,7 @@ function fillBookshelf() {
   for (let i = 0; i < bsrLen; i += 1) {
     if (i < libLen) {
       // if in libLen, update and show
-      bookshelfReference[i].textContent = myLibrary[i].info();
+      bookshelfReference[i].querySelector('.book-info').textContent = myLibrary[i].info();
       bookshelfReference[i].style.display = 'block';
     } else {
       // in out of libLen, skip update and hide
@@ -118,15 +95,24 @@ formToggle.addEventListener("click", formToggleDisplay);
 
 function formSubmit(e) {
   e.preventDefault();
-  // validate if all good, then turn into book object and add to library, then clear form
+  // validate if all good
+  
+  // turn into book object and add to library, then clear form
+  myLibrary.push(new Book(bookTitle.value, bookAuthor.value, bookPages.value, Boolean(bookRead.value)));
+  bookTitle.value = "";
+  bookAuthor.value = "";
+  bookPages.value = "";
+  bookRead.value = "";
+
+  fillBookshelf();
 }
 
-bookSubmit.addEventListener("click", formSubmit, false);
+bookForm.addEventListener("submit", formSubmit);
 
 // testing data
 
-myLibrary[0] = new Book('Oathbringer', 'Brandon Sanderson', 1306, false);
-myLibrary[1] = new Book('Rhythm of War', 'Brandon Sanderson', 1270, false);
+myLibrary.push(new Book('Oathbringer', 'Brandon Sanderson', 1306, false));
+myLibrary.push(new Book('Rhythm of War', 'Brandon Sanderson', 1270, false));
 
 fillBookshelf();
 fillBookshelf();
