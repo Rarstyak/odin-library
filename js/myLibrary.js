@@ -25,14 +25,13 @@ Book.prototype.info = function info() {
 function toggleRead(e) {
   const index = e.target.parentElement.getAttribute('data-shelf-number');
   myLibrary[index].read = !myLibrary[index].read;
-  fillBookshelf();
+  bookshelfReference[index].setAttribute('data-read', myLibrary[index].read);
 }
 
 function removeBookFromLibrary(e) {
   const index = e.target.parentElement.getAttribute('data-shelf-number');
   myLibrary.splice(index, 1);
   fillBookshelf();
-  return myLibrary.length - 1;
 }
 
 function addBookCard() {
@@ -47,9 +46,11 @@ function addBookCard() {
 
   bookReadButton.classList.add('book-read-button');
   bookReadButton.addEventListener('click', toggleRead);
+  bookReadButton.textContent = 'Read';
 
   bookRemoveButton.classList.add('book-remove-button');
   bookRemoveButton.addEventListener('click', removeBookFromLibrary);
+  bookRemoveButton.textContent = 'Remove';
 
   bookDiv.appendChild(bookInfo);
   bookDiv.appendChild(bookReadButton);
@@ -68,7 +69,9 @@ function fillBookshelf() {
   if (libLen > bsrLen) {
     // add book cards until equal
     for (let i = bsrLen; i < libLen; i += 1) {
-      addBookCard().setAttribute('data-shelf-number', i);
+      const book = addBookCard();
+      book.setAttribute('data-shelf-number', i);
+      book.setAttribute('data-read', myLibrary[i].read);
     }
   }
 
@@ -111,6 +114,8 @@ bookForm.addEventListener("submit", formSubmit);
 
 // testing data
 
+myLibrary.push(new Book('The Way of Kings', 'Brandon Sanderson', 1252, true));
+myLibrary.push(new Book('Words of Radiance', 'Brandon Sanderson', 1303, true));
 myLibrary.push(new Book('Oathbringer', 'Brandon Sanderson', 1306, false));
 myLibrary.push(new Book('Rhythm of War', 'Brandon Sanderson', 1270, false));
 

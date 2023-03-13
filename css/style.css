@@ -1,7 +1,7 @@
 :root {
-    --color-primary: red;
+    --color-primary: blue;
     --color-read: green;
-    --color-unread: yellow;
+    --color-unread: red;
 }
 
 header {
@@ -22,6 +22,14 @@ header {
     border-radius: 1rem;
 
     padding: 1rem;
+}
+
+.book[data-read='true'] {
+    border: 2px solid var(--color-read);
+}
+
+.book[data-read='false'] {
+    border: 2px solid var(--color-unread);
 }
 
 .book-read-button {
