@@ -11,16 +11,20 @@ const bookPages = document.querySelector('#book-pages');
 const bookRead = document.querySelector('#book-read');
 // const bookSubmit = document.querySelector('#book-submit');
 
-function Book(title, author, pages, read) {
-  this.title = title;
-  this.author = author;
-  this.pages = pages;
-  this.read = Boolean(read);
-}
+class Book {
+  
+  constructor(title, author, pages, read) {
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.read = Boolean(read);
+  }
 
-Book.prototype.info = function info() {
-  return `${this.title} by ${this.author}, ${this.pages} pages, ${this.read ? 'read' : 'not read yet'}`;
-};
+  info() {
+    return `${this.title} by ${this.author}, ${this.pages} pages, ${this.read ? 'read' : 'not read yet'}`;
+  }
+
+}
 
 function toggleRead(e) {
   const index = e.target.parentElement.getAttribute('data-shelf-number');
